@@ -15,7 +15,7 @@ limitations under the License.
 */
 package main
 
-import "../../Desktop/driveSecrets/cmd"
+import "main/cmd"
 
 func main() {
 	cmd.Execute()

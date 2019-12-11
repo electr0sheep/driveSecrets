@@ -10,6 +10,21 @@ CLI tool to store secrets on Google Drive (cause why not?)
 2. [Cobra](https://github.com/spf13/cobra)
 3. [Google API Go Client](https://github.com/googleapis/google-api-go-client)
 
+### Setup
+1. Install Go
+```
+brew install go
+```
+2. Install Cobra
+```
+go get -u github.com/spf13/cobra/cobra
+```
+3. Install Google API Go Client
+```
+go get -u google.golang.org/api/drive/v3
+go get -u golang.org/x/oauth2/google
+```
+
 ### Run
 
 ```
@@ -42,3 +57,5 @@ This project is licensed under the Apache License - see the [LICENSE](LICENSE) f
 1. Implement addSecret command to add a new secret
 2. Implement viewSecrets command to view the secrets
 3. Obviously the hard-coded aes key needs to change
+4. Make it work without having to do Google Dev API stuff
+5. Store a copy of the drive file locally to reduce network usage?
