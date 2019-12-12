@@ -32,7 +32,7 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
-		println(driveWrapper.AddKeyValueToFile(args[0], args[1], verbose))
+		driveWrapper.AddKeyValueToFile(args[0], args[1], verbose)
 	},
 }
 
