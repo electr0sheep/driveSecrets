@@ -58,3 +58,4 @@ This project is licensed under the Apache License - see the [LICENSE](LICENSE) f
 2. Store a copy of the drive file locally to reduce network usage?
 3. Where should the aes key file go? How should it be stored? etc., etc.
 4. How to securely handle client secret in api_credentials?
+5. Possibly use viper to store aes key, name of file, location of file, cached data, etc.
