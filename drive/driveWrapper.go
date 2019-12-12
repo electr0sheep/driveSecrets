@@ -32,8 +32,8 @@ import (
 	"google.golang.org/api/drive/v3"
 )
 
-func RemoveKeyFromFile(key string, verbose bool) string {
-	credentials := getCredentials("credentials.json")
+func RemoveKeyFromFile(key string, verbose bool) {
+	credentials := getCredentials("api_credentials.json")
 
 	config := getConfig(credentials)
 
@@ -41,7 +41,7 @@ func RemoveKeyFromFile(key string, verbose bool) string {
 
 	service := getDriveService(client)
 
-	file := getOrCreateDocByNameSearchString("hi.txt", service, verbose)
+	file := getOrCreateDoc(service, verbose)
 
 	contents := readFileContents(file, service)
 
@@ -50,7 +50,8 @@ func RemoveKeyFromFile(key string, verbose bool) string {
 	unmarshalledJSON := getUnmarshalledJSON(decrypted_body)
 
 	if unmarshalledJSON[key] == nil {
-		return fmt.Sprintf("Key '%s' does not exist!", key)
+		fmt.Printf("Key '%s' does not exist!", key)
+		return
 	} else {
 		delete(unmarshalledJSON, key)
 	}
@@ -59,11 +60,15 @@ func RemoveKeyFromFile(key string, verbose bool) string {
 
 	saveFile(file, service, string(marshalledJSON))
 
-	return prettyPrintJSON(string(marshalledJSON))
+	if verbose {
+		println(prettyPrintJSON(string(marshalledJSON)))
+	}
+
+	return
 }
 
-func AddKeyValueToFile(key string, value string, verbose bool) string {
-	credentials := getCredentials("credentials.json")
+func AddKeyValueToFile(key string, value string, verbose bool) {
+	credentials := getCredentials("api_credentials.json")
 
 	config := getConfig(credentials)
 
@@ -71,7 +76,7 @@ func AddKeyValueToFile(key string, value string, verbose bool) string {
 
 	service := getDriveService(client)
 
-	file := getOrCreateDocByNameSearchString("hi.txt", service, verbose)
+	file := getOrCreateDoc(service, verbose)
 
 	contents := readFileContents(file, service)
 
@@ -80,7 +85,8 @@ func AddKeyValueToFile(key string, value string, verbose bool) string {
 	unmarshalledJSON := getUnmarshalledJSON(decrypted_body)
 
 	if unmarshalledJSON[key] != nil {
-		return fmt.Sprintf("Key '%s' already exists!", key)
+		fmt.Printf("Key '%s' already exists!", key)
+		return
 	} else {
 		unmarshalledJSON[key] = value
 	}
@@ -89,11 +95,13 @@ func AddKeyValueToFile(key string, value string, verbose bool) string {
 
 	saveFile(file, service, string(marshalledJSON))
 
-	return prettyPrintJSON(string(marshalledJSON))
+	if verbose {
+		println(prettyPrintJSON(string(marshalledJSON)))
+	}
 }
 
 func ReadFile(verbose bool) string {
-	credentials := getCredentials("credentials.json")
+	credentials := getCredentials("api_credentials.json")
 
 	config := getConfig(credentials)
 
@@ -101,7 +109,7 @@ func ReadFile(verbose bool) string {
 
 	service := getDriveService(client)
 
-	file := getOrCreateDocByNameSearchString("hi.txt", service, verbose)
+	file := getOrCreateDoc(service, verbose)
 
 	contents := readFileContents(file, service)
 
@@ -141,7 +149,7 @@ func getCredentials(filename string) []byte {
 
 func getConfig(credentials []byte) *oauth2.Config {
 	// If modifying these scopes, delete your previously saved token.json.
-	config, err := google.ConfigFromJSON(credentials, drive.DriveScope)
+	config, err := google.ConfigFromJSON(credentials, drive.DriveFileScope)
 	if err != nil {
 		log.Fatalf("Unable to parse client secret file to config: %v", err)
 	}
@@ -188,8 +196,9 @@ func readFileContents(file *drive.File, srv *drive.Service) string {
 	return string(body)
 }
 
-func getOrCreateDocByNameSearchString(name string, srv *drive.Service, verbose bool) *drive.File {
-	fileListResult, err := srv.Files.List().Q(fmt.Sprintf("name = '%s'", name)).Do()
+func getOrCreateDoc(srv *drive.Service, verbose bool) *drive.File {
+	filename := "secrets.txt"
+	fileListResult, err := srv.Files.List().Do()
 	if err != nil {
 		log.Fatalf("Unable to list files: %v", err)
 	}
@@ -198,14 +207,14 @@ func getOrCreateDocByNameSearchString(name string, srv *drive.Service, verbose b
 
 	if len(fileListResult.Files) > 0 {
 		if verbose {
-			fmt.Printf("File already exists\n")
+			fmt.Printf("File already exists!\n")
 		}
 		file = fileListResult.Files[0]
 	} else {
 		if verbose {
 			fmt.Printf("File did not already exist, creating\n")
 		}
-		file, err = srv.Files.Create(&drive.File{Name: name}).Media(strings.NewReader(crypto.Encrypt("{}"))).Do()
+		file, err = srv.Files.Create(&drive.File{Name: filename}).Media(strings.NewReader(crypto.Encrypt("{}"))).Do()
 		if err != nil {
 			log.Fatalf("Unable to create file: %v", err)
 		}
