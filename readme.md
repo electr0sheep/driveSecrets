@@ -56,3 +56,5 @@ This project is licensed under the Apache License - see the [LICENSE](LICENSE) f
 ## To-Do List
 1. Make it work without having to do Google Dev API stuff
 2. Store a copy of the drive file locally to reduce network usage?
+3. Where should the aes key file go? How should it be stored? etc., etc.
+4. How to securely handle client secret in api_credentials?
