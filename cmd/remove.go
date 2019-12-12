@@ -23,13 +23,11 @@ import (
 // removeCmd represents the remove command
 var removeCmd = &cobra.Command{
 	Use:   "remove",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Removes a key-value pair",
+	Long: `Sick of all these key-value pairs? Give us the key, and we'll nuke it, so you
+can get back binging that new season of Downton Abbey.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+Spoiler alert: Robert dies`,
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		driveWrapper.RemoveKeyFromFile(args[0], verbose)

@@ -30,13 +30,12 @@ var verbose bool
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "driveSecrets",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	Short: "Store your crap in Drive, encrypted style",
+	Long: `driveSecrets is the CLI you never knew you needed until you tried it.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+Using state-of-the-art aes-cbc encryption, you'll rest easy knowing that all
+your key-value pairs are safely stored in the cloud, so you'll never lose them.
+Unless you lose your aes key, then you're screwed.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	//	Run: func(cmd *cobra.Command, args []string) { },
@@ -59,11 +58,10 @@ func init() {
 	// will be global for your application.
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.driveSecrets.yaml)")
+	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "Display verbose output")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "Display verbose output")
 }
 
 // initConfig reads in config file and ENV variables if set.

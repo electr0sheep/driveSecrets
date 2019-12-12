@@ -24,13 +24,15 @@ import (
 // generateKeyCmd represents the generateKey command
 var generateKeyCmd = &cobra.Command{
 	Use:   "generateKey",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Generates an aes key",
+	Long: `
+Don't even know who aes is? Boy, is this command for you.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+This will randomly generate an aes key for you that's even more random than that
+one awkward co-worker. With keys this random, there's NO WAY Eve, or any of
+those cyber wack-jobs* will ever sniff your secrets.
+*(https://en.wikipedia.org/wiki/Alice_and_Bob#Cast_of_characters)
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		crypto.GenerateKey()
 	},

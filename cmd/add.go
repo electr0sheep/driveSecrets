@@ -23,13 +23,11 @@ import (
 // addCmd represents the add command
 var addCmd = &cobra.Command{
 	Use:   "add",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Adds a key-value pair to your secrets",
+	Long: `Never before has it been so easy to add a key-value pair to a secret file!
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+It's so easy, your 3 year old could do it! We strive to live by our motto of
+"We do the undifferentiated heavy-lifting for you."`,
 	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 		driveWrapper.AddKeyValueToFile(args[0], args[1], verbose)
