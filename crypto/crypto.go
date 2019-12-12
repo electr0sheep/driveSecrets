@@ -19,16 +19,54 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
-	"encoding/hex"
+	"fmt"
 	"io"
+	"io/ioutil"
+	"log"
+	"os"
 )
+
+func GenerateKey() {
+	_, err := ioutil.ReadFile("key.aes")
+	if err != nil {
+		key := make([]byte, 32)
+
+		_, err := rand.Read(key)
+		if err != nil {
+			log.Fatalf("Error generating key: %v", err)
+		}
+
+		fmt.Printf("Saving credential file to: %s\n", "key.aes")
+		f, err := os.OpenFile("key.aes", os.O_RDWR|os.O_CREATE, 0600)
+		if err != nil {
+			log.Fatalf("Unable to create aes key file: %v", err)
+		}
+		defer f.Close()
+		f.Write(key)
+	} else {
+		working_dir, _ := os.Getwd()
+		log.Printf("WARNING: You already have a key set up. Generating a new key will possibly cause you to permanently lose access to your data. To proceed anyway, remove the key file (rm %s/key.aes) and rerun the command.",
+			working_dir)
+	}
+}
+
+func readKey() []byte {
+	file, err := ioutil.ReadFile("key.aes")
+	if err != nil {
+		log.Fatalf("Unable to read aes key file, run driveSecrets generateKey: %v", err)
+	}
+
+	return file
+}
 
 func Encrypt(plaintext_string string) string {
 	// Load your secret key from a safe place and reuse it across multiple
 	// NewCipher calls. (Obviously don't use this example key for anything
 	// real.) If you want to convert a passphrase to a key, use a suitable
 	// package like bcrypt or scrypt.
-	key, _ := hex.DecodeString("6368616e676520746869732070617373")
+	key := readKey()
+	// key, _ := hex.DecodeString(readKey())
+	// key, _ := hex.DecodeString("6368616e676520746869732070617373")
 	plaintext := []byte(plaintext_string)
 
 	// CBC mode works on blocks so plaintexts may need to be padded to the
@@ -65,7 +103,11 @@ func Decrypt(ciphertext_string string) string {
 	// NewCipher calls. (Obviously don't use this example key for anything
 	// real.) If you want to convert a passphrase to a key, use a suitable
 	// package like bcrypt or scrypt.
-	key, _ := hex.DecodeString("6368616e676520746869732070617373")
+	key := readKey()
+	// key, err := hex.DecodeString(read_key)
+	// if err != nil {
+	// 	panic(err)
+	// }
 	ciphertext := []byte(ciphertext_string)
 
 	block, err := aes.NewCipher(key)

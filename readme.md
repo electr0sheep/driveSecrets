@@ -54,8 +54,5 @@ This project is licensed under the Apache License - see the [LICENSE](LICENSE) f
 * The 21oz bag of pepperoni providing gamer fuel to me while writing this readme
 
 ## To-Do List
-1. Implement addSecret command to add a new secret
-2. Implement viewSecrets command to view the secrets
-3. Obviously the hard-coded aes key needs to change
-4. Make it work without having to do Google Dev API stuff
-5. Store a copy of the drive file locally to reduce network usage?
+1. Make it work without having to do Google Dev API stuff
+2. Store a copy of the drive file locally to reduce network usage?

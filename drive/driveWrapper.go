@@ -105,6 +105,10 @@ func ReadFile(verbose bool) string {
 
 	contents := readFileContents(file, service)
 
+	if contents == "" {
+		log.Fatalf("The contents of the file were empty. Add a key first.")
+	}
+
 	decrypted_body := crypto.Decrypt(contents)
 
 	return prettyPrintJSON(decrypted_body)
@@ -149,7 +153,8 @@ func prettyPrintJSON(JSON string) string {
 
 	err := json.Indent(&prettyJSON, bytes.Trim([]byte(JSON), "\x00"), "", "  ")
 	if err != nil {
-		log.Fatalf("Unable to pretty-print JSON: %v", err)
+		log.Printf("JSON string: %s\n", JSON)
+		log.Fatalf("Unable to pretty-print JSON (the decryption key may have been wrong): %v", err)
 	}
 
 	return prettyJSON.String()
@@ -200,7 +205,7 @@ func getOrCreateDocByNameSearchString(name string, srv *drive.Service, verbose b
 		if verbose {
 			fmt.Printf("File did not already exist, creating\n")
 		}
-		file, err = srv.Files.Create(&drive.File{Name: name}).Do()
+		file, err = srv.Files.Create(&drive.File{Name: name}).Media(strings.NewReader(crypto.Encrypt("{}"))).Do()
 		if err != nil {
 			log.Fatalf("Unable to create file: %v", err)
 		}
